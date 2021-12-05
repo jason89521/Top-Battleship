@@ -1,0 +1,28 @@
+{
+  "name": "top-battleship",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "watch:test": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jason89521/Top-Battleship.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jason89521/Top-Battleship/issues"
+  },
+  "homepage": "https://github.com/jason89521/Top-Battleship#readme",
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@types/jest": "^27.0.3",
+    "babel-jest": "^27.4.2",
+    "jest": "^27.4.3"
+  }
+}
