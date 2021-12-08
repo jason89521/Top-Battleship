@@ -1,4 +1,4 @@
-import Player from '../src/js/player';
+import Player from "../player";
 
 const player = new Player();
 console.log(player.foo);

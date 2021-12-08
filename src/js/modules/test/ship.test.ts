@@ -1,4 +1,4 @@
-import Ship from '../src/js/ship';
+import Ship from "../ship";
 
 describe('properties', () => {
     const ship = new Ship(5);

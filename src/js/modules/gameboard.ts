@@ -1,12 +1,11 @@
 import Ship from './ship';
 
 class State {
-    /**
-     * @param {boolean} isHit
-     * @param {boolean} isShip
-     * @param {number} shipOrder
-     * @param {number} shipBodyPos
-     */
+    isHit: boolean;
+    isShip: boolean;
+    shipOrder: number;
+    shipBodyPos: number;
+
     constructor(isHit = false, isShip = false, shipOrder = -1, shipBodyPos = -1) {
         this.isHit = isHit;
         this.isShip = isShip;
@@ -20,9 +19,10 @@ export default class Gameboard {
 
     placeOrder = 0;
 
+    board: State[][] = [];
+    ships: Ship[] = [];
+
     constructor() {
-        this.board = [];
-        this.ships = [];
         for (let i = 0; i < 10; i++) {
             this.board.push([]);
             for (let j = 0; j < 10; j++) this.board[i].push(new State());
@@ -33,13 +33,13 @@ export default class Gameboard {
         this.ships.push(new Ship(5), new Ship(5));
     }
 
-    _getFactor(isVertical) {
+    _getFactor(isVertical: boolean) {
         const xFactor = isVertical ? 0 : 1;
         const yFactor = isVertical ? 1 : 0;
         return [xFactor, yFactor];
     }
 
-    _isOutOfBoard(x, y, isVertical, shipLength) {
+    _isOutOfBoard(x: number, y: number, isVertical: boolean, shipLength: number) {
         const [xFactor, yFactor] = this._getFactor(isVertical);
         for (let i = 0; i < shipLength; i++)
             if (x + i * xFactor >= this._boardSize || y + i * yFactor >= this._boardSize) return true;
@@ -47,14 +47,14 @@ export default class Gameboard {
         return false;
     }
 
-    _isEmpty(x, y, isVertical, shipLength) {
+    _isEmpty(x: number, y: number, isVertical: boolean, shipLength: number) {
         const [xFactor, yFactor] = this._getFactor(isVertical);
         for (let i = 0; i < shipLength; i++) if (this.board[x + i * xFactor][y + i * yFactor].isShip) return false;
 
         return true;
     }
 
-    _isValidPos(x, y, isVertical, shipLength) {
+    _isValidPos(x: number, y: number, isVertical: boolean, shipLength: number) {
         return !this._isOutOfBoard(x, y, isVertical, shipLength) && this._isEmpty(x, y, isVertical, shipLength);
     }
 
@@ -63,7 +63,7 @@ export default class Gameboard {
      * @param {boolean} isVertical
      * @returns whether the ship is placed correctly
      */
-    placeShip(coordinate, isVertical = true) {
+    placeShip(coordinate: { x: number; y: number }, isVertical: boolean = true) {
         if (this.placeOrder >= this.ships.length) return false;
 
         const x = coordinate.x;
@@ -81,6 +81,4 @@ export default class Gameboard {
         this.placeOrder += 1;
         return true;
     }
-
-    receiveAttack(targetRow, targetCol) {}
 }

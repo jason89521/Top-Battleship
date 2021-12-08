@@ -1,4 +1,5 @@
-import Gameboard from '../src/js/gameboard';
+import Gameboard from '../gameboard';
+
 describe('placeShip function', () => {
     const gameboard = new Gameboard();
     test('place on the appropriate position vertically', () => {
