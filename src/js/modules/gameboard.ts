@@ -6,18 +6,22 @@ class State {
     shipOrder: number;
     shipBodyPos: number;
 
-    constructor(isHit = false, isShip = false, shipOrder = -1, shipBodyPos = -1) {
-        this.isHit = isHit;
-        this.isShip = isShip;
-        this.shipOrder = shipOrder;
-        this.shipBodyPos = shipBodyPos;
+    constructor() {
+        this.init();
+    }
+
+    init() {
+        this.isHit = false;
+        this.isShip = false;
+        this.shipOrder = -1;
+        this.shipBodyPos = -1;
     }
 }
 
 export default class Gameboard {
-    _boardSize = 10;
+    #boardSize = 10;
 
-    placeOrder = 0;
+    #placeOrder = 0;
 
     board: State[][] = [];
     ships: Ship[] = [];
@@ -27,58 +31,79 @@ export default class Gameboard {
             this.board.push([]);
             for (let j = 0; j < 10; j++) this.board[i].push(new State());
         }
-        this.ships.push(new Ship(2), new Ship(2));
-        this.ships.push(new Ship(3), new Ship(3));
-        this.ships.push(new Ship(4), new Ship(4));
-        this.ships.push(new Ship(5), new Ship(5));
+        this.ships.push(new Ship(2));
+        this.ships.push(new Ship(3));
+        this.ships.push(new Ship(3));
+        this.ships.push(new Ship(4));
+        this.ships.push(new Ship(5));
     }
 
-    _getFactor(isVertical: boolean) {
-        const xFactor = isVertical ? 0 : 1;
-        const yFactor = isVertical ? 1 : 0;
-        return [xFactor, yFactor];
+    get currentShipSize() {
+        return this.ships[this.#placeOrder].size;
     }
 
-    _isOutOfBoard(x: number, y: number, isVertical: boolean, shipLength: number) {
-        const [xFactor, yFactor] = this._getFactor(isVertical);
+    #getFactor(isVertical: boolean) {
+        const rowFactor = isVertical ? 1 : 0;
+        const colFactor = isVertical ? 0 : 1;
+        return [rowFactor, colFactor];
+    }
+
+    #isOutOfBoard(row: number, col: number, isVertical: boolean) {
+        const [rowFactor, colFactor] = this.#getFactor(isVertical);
+        const shipLength = this.ships[this.#placeOrder].body.length;
         for (let i = 0; i < shipLength; i++)
-            if (x + i * xFactor >= this._boardSize || y + i * yFactor >= this._boardSize) return true;
+            if (row + i * rowFactor >= this.#boardSize || col + i * colFactor >= this.#boardSize) return true;
 
         return false;
     }
 
-    _isEmpty(x: number, y: number, isVertical: boolean, shipLength: number) {
-        const [xFactor, yFactor] = this._getFactor(isVertical);
-        for (let i = 0; i < shipLength; i++) if (this.board[x + i * xFactor][y + i * yFactor].isShip) return false;
+    #isEmpty(row: number, col: number, isVertical: boolean) {
+        const [rowFactor, colFactor] = this.#getFactor(isVertical);
+        const shipLength = this.ships[this.#placeOrder].body.length;
+        for (let i = 0; i < shipLength; i++) if (this.board[row + i * rowFactor][col + i * colFactor].isShip) return false;
 
         return true;
     }
 
-    _isValidPos(x: number, y: number, isVertical: boolean, shipLength: number) {
-        return !this._isOutOfBoard(x, y, isVertical, shipLength) && this._isEmpty(x, y, isVertical, shipLength);
+    init() {
+        this.#placeOrder = 0;
+        this.ships.forEach(ship => ship.init());
+        for (let i = 0; i < this.#boardSize; i++) this.board[i].forEach(value => value.init());
     }
 
-    /**
-     * @param {{x: number, y:number}} coordinate
-     * @param {boolean} isVertical
-     * @returns whether the ship is placed correctly
-     */
-    placeShip(coordinate: { x: number; y: number }, isVertical: boolean = true) {
-        if (this.placeOrder >= this.ships.length) return false;
+    isAllShipsPlaced() {
+        return this.#placeOrder >= 5;
+    }
 
-        const x = coordinate.x;
-        const y = coordinate.y;
-        const shipLength = this.ships[this.placeOrder].body.length;
-        if (!this._isValidPos(x, y, isVertical, shipLength)) return false;
+    isValidPos(row: number, col: number, isVertical: boolean) {
+        return !this.#isOutOfBoard(row, col, isVertical) && this.#isEmpty(row, col, isVertical);
+    }
 
-        const [xFactor, yFactor] = this._getFactor(isVertical);
+    placeShip(row: number, col: number, isVertical: boolean = true) {
+        const shipLength = this.ships[this.#placeOrder].body.length;
+        const [rowFactor, colFactor] = this.#getFactor(isVertical);
         for (let i = 0; i < shipLength; i++) {
-            this.board[x + i * xFactor][y + i * yFactor].isShip = true;
-            this.board[x + i * xFactor][y + i * yFactor].shipOrder = this.placeOrder;
-            this.board[x + i * xFactor][y + i * yFactor].shipBodyPos = i;
+            this.board[row + i * rowFactor][col + i * colFactor].isShip = true;
+            this.board[row + i * rowFactor][col + i * colFactor].shipOrder = this.#placeOrder;
+            this.board[row + i * rowFactor][col + i * colFactor].shipBodyPos = i;
         }
 
-        this.placeOrder += 1;
+        this.#placeOrder += 1;
+    }
+
+    receiveAttack(row: number, col: number) {
+        this.board[row][col].isHit = true;
+        if (this.board[row][col].isShip) {
+            const shipOrder = this.board[row][col].shipOrder;
+            const shipBodyPos = this.board[row][col].shipBodyPos;
+            this.ships[shipOrder].body[shipBodyPos] = false;
+            return true;
+        }
+        return false;
+    }
+
+    isAllShipsSunk() {
+        for (let i = 0; i < this.ships.length; i++) if (!this.ships[i].isSunk()) return false;
         return true;
     }
 }

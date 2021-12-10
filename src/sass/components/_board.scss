@@ -1,0 +1,27 @@
+.board {
+    width: 25rem;
+    display: inline-grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+
+    &__cell {
+        border-right: 1px solid black;
+        border-bottom: 1px solid black;
+        width: 2.5rem;
+        height: 2.5rem;
+
+        &--ship {
+            background-color: green;
+        }
+
+        &--hit {
+            background-color: red;
+        }
+
+        &--miss {
+            background-color: blue;
+        }
+    }
+}

@@ -1,0 +1,9 @@
+.playground {
+    text-align: center;
+
+    & > * {
+        &:first-child {
+            margin-right: 5rem;
+        }
+    }
+}

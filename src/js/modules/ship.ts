@@ -1,11 +1,14 @@
 export default class Ship {
     body: boolean[] = [];
+    size: number
 
-    /**
-     * @param {number} length
-     */
     constructor(length: number) {
+        this.size = length;
         for (let i = 0; i < length; i++) this.body.push(true);
+    }
+
+    init() {
+        this.body.fill(true);
     }
 
     hit(position: number) {

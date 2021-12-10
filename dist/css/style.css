@@ -1,0 +1,49 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.heading-primary {
+  font-size: 3rem;
+}
+
+.board {
+  width: 25rem;
+  display: inline-grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+}
+.board__cell {
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+.board__cell--ship {
+  background-color: green;
+}
+.board__cell--hit {
+  background-color: red;
+}
+.board__cell--miss {
+  background-color: blue;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.playground {
+  text-align: center;
+}
+.playground > *:first-child {
+  margin-right: 5rem;
+}
+
+/*# sourceMappingURL=style.css.map */
