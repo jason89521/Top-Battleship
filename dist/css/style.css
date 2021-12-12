@@ -1,9 +1,19 @@
+body {
+  padding-top: 2rem;
+  background-color: #dfdfdf;
+}
+
 *,
 *::before,
 *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  text-decoration: none;
+  outline: none;
+  border: none;
+  background: none;
+  font-family: monospace;
 }
 
 .heading-primary {
@@ -15,23 +25,50 @@
   display: inline-grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
-  border-top: 1px solid black;
-  border-left: 1px solid black;
+  gap: 3px;
+  transition: all 0.3s;
+}
+.board--hidden {
+  display: none;
 }
 .board__cell {
-  border-right: 1px solid black;
-  border-bottom: 1px solid black;
+  border: 1px solid black;
   width: 2.5rem;
   height: 2.5rem;
 }
 .board__cell--ship {
-  background-color: green;
+  background-color: #77ee77;
 }
 .board__cell--hit {
-  background-color: red;
+  background-color: #ee7777;
 }
 .board__cell--miss {
-  background-color: blue;
+  background-color: #2188ff;
+}
+
+.btn {
+  width: 10rem;
+  padding: 1rem 1.5rem;
+  border-radius: 25px;
+  text-transform: uppercase;
+  text-align: center;
+}
+.btn--enabled {
+  cursor: pointer;
+  background-color: #adff2f;
+  backface-visibility: hidden;
+  transition: all 0.2s;
+}
+.btn--enabled:hover {
+  transform: translateY(-3px) scale(1.1);
+}
+.btn--enabled:active {
+  transform: scale(1.1);
+}
+.btn--disabled {
+  cursor: not-allowed;
+  opacity: 0.75;
+  background-color: gray;
 }
 
 .header {
@@ -39,11 +76,28 @@
   margin-bottom: 2rem;
 }
 
-.playground {
-  text-align: center;
+.section-control {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-bottom: 2rem;
 }
-.playground > *:first-child {
-  margin-right: 5rem;
+
+.section-board {
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+  margin-bottom: 2rem;
+}
+
+.game-message {
+  text-align: center;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+.game-message--hidden {
+  opacity: 0;
+  visibility: hidden;
 }
 
 /*# sourceMappingURL=style.css.map */

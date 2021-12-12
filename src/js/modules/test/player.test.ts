@@ -1,11 +1,11 @@
 import Player from '../player';
 
-const player1 = new Player();
-const player2 = new Player();
+const player1 = new Player(false);
+const player2 = new Player(false);
 describe('attack', () => {
     beforeAll(() => {
-        player1.init();
-        player2.init();
+        player1.init(false);
+        player2.init(false);
     });
 
     test('attck on empty ', () => {
@@ -17,25 +17,10 @@ describe('attack', () => {
     });
 });
 
-describe('isValidPosToAttack', () => {
-    beforeAll(() => {
-        player1.init();
-        player2.init();
-    });
-
-    test('return true when the position is valid ', () => {
-        expect(player2.isValidPosToAttack(0, 0)).toBeTruthy();
-    });
-    test('return false when the position has been attacked', () => {
-        player2.gameboard.board[0][0].isHit = true;
-        expect(player2.isValidPosToAttack(0, 0)).toBeFalsy();
-    });
-});
-
 describe('getSelection', () => {
     beforeAll(() => {
-        player1.init();
-        player2.init();
+        player1.init(false);
+        player2.init(false);
     });
 
     test('return [0, 0]', () => {

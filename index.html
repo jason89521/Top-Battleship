@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,16 +8,28 @@
     <title>Battleship</title>
     <link rel="stylesheet" href="./dist/css/style.css">
 </head>
+
 <body>
     <header class="header">
         <h1 class="heading-primary">Battleship</h1>
     </header>
-    <main class="playground">
-        <div id="board1" class="board"></div>
-        <div id="board2" class="board"></div>
+    <main>
+        <section class="section-control">
+            <label class="btn btn--enabled" id="rotate-btn" for="rotate">rotate</label>
+            <input type="checkbox" id="rotate" hidden>
+            <button class="btn btn--disabled" id="start-btn">start</button>
+            <button class="btn btn--enabled" id="reset-btn">Reset</button>
+        </section>
+        <section class="section-board">
+            <div id="board1" class="board"></div>
+            <div id="board2" class="board board--hidden"></div>
+        </section>
+        <section class="result">
+            <h2 class="game-message game-message--hidden" id="game-message">You win</h2>
+        </section>
     </main>
-    <button id="reset">Reset</button>
 
     <script src="./dist/index.bundle.js"></script>
 </body>
+
 </html>

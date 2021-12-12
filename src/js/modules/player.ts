@@ -2,10 +2,14 @@ import Gameboard from './gameboard';
 
 export default class Player {
     gameboard = new Gameboard();
+    isAI: boolean
 
-    constructor() {}
+    constructor(isAI: boolean) {
+        this.isAI = isAI;
+    }
 
-    init() {
+    init(isAI: boolean) {
+        this.isAI = isAI;
         this.gameboard.init();
     }
 
@@ -13,16 +17,11 @@ export default class Player {
         return opponent.gameboard.receiveAttack(row, col);
     }
 
-    isValidPosToAttack(row: number, col: number) {
-        return !this.gameboard.board[row][col].isHit;
-    }
-
     getSelection(opponent: Player) {
-        const opponentBoard = opponent.gameboard.board;
         const boardSize = 10;
         for (let row = 0; row < boardSize; row++) {
             for (let col = 0; col < boardSize; col++) {
-                if (!opponentBoard[row][col].isHit) {
+                if (opponent.gameboard.isValidPosToAttack(row, col)) {
                     return [row, col];
                 }
             }

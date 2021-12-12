@@ -18,7 +18,7 @@ function renderShootOnBoard(row: number, col: number, isShip: boolean, board: HT
     board.children[index].classList.add(classToBeAdded);
 }
 
-function generateBoard(boards: NodeListOf<Element>) {
+function generateCell(boards: NodeListOf<Element>) {
     boards.forEach(board => {
         for (let row = 0; row < 10; row++)
             for (let col = 0; col < 10; col++) {
@@ -31,4 +31,17 @@ function generateBoard(boards: NodeListOf<Element>) {
     });
 }
 
-export { renderShipOnBoard, renderShootOnBoard, generateBoard };
+function clearBoard(board: HTMLElement) {
+    const children = board.children;
+    for (let i = 0; i < children.length; i++) children[i].className = 'board__cell';
+}
+
+function showGameMessage(gameMsg: HTMLElement) {
+    gameMsg.classList.remove('game-message--hidden');
+}
+
+function hideGameMessage(gameMsg: HTMLElement) {
+    gameMsg.classList.add('game-message--hidden');
+}
+
+export { renderShipOnBoard, renderShootOnBoard, generateCell, clearBoard, showGameMessage, hideGameMessage };

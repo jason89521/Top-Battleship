@@ -1,66 +1,101 @@
-import { generateBoard, renderShipOnBoard, renderShootOnBoard } from './DOM/renderer';
-import { getRowColFromDataset, isGameOver } from './DOM/utils';
-import Player from './modules/player';
+import {
+    clearBoard,
+    generateCell,
+    hideGameMessage,
+    renderShipOnBoard,
+    renderShootOnBoard,
+    showGameMessage,
+} from './DOM/renderer';
+import { disableBtn, enableBtn, getRowColFromDataset } from './DOM/utils';
+import Game from './modules/game';
 
+const rotateInput = document.getElementById('rotate') as HTMLInputElement;
+const rotateBtn = document.getElementById('rotate-btn');
+const startBtn = document.getElementById('start-btn');
 const board1 = document.getElementById('board1');
 const board2 = document.getElementById('board2');
-const player1 = new Player();
-const player2 = new Player();
+const gameMsg = document.getElementById('game-message');
 
-let whoseTurn = 1;
+const game = new Game();
+
+generateCell(document.querySelectorAll('.board'));
+
+game.placeShip(1, 0, 0, true);
+game.placeShip(1, 0, 1, true);
+game.placeShip(1, 0, 2, true);
+game.placeShip(1, 0, 3, true);
+game.placeShip(1, 0, 4, true);
 
 board1.addEventListener('click', event => {
     const target = event.target;
     if (target instanceof HTMLElement) {
         const [row, col] = getRowColFromDataset(target.dataset);
-        if (!player1.gameboard.isAllShipsPlaced() && player1.gameboard.isValidPos(row, col, true)) {
-            const shipInfo = { size: player1.gameboard.currentShipSize, isVertical: true };
+        if (isNaN(row)) return;
+        const isVertical = !rotateInput.checked;
+        if (!game.isAllShipsPlaced(0) && game.isValidPosToPlace(0, row, col, isVertical)) {
+            const shipInfo = { size: game.getCurrentShipSize(0), isVertical: isVertical };
             renderShipOnBoard(row, col, shipInfo, board1);
-            player1.gameboard.placeShip(row, col, true);
-        } else {
-            console.log('there is no ship or the position is invalid');
+            game.placeShip(0, row, col, isVertical);
+            if (game.isAllShipsPlaced(0)) {
+                startBtn.classList.add('btn--enabled');
+                startBtn.classList.remove('btn--disabled');
+            }
         }
     }
 });
 
 board2.addEventListener('click', event => {
-    // if the ships haven't been placed || the game is over
-    if (!player1.gameboard.isAllShipsPlaced() || isGameOver(player1, player2)) return;
+    if (!game.isAllShipsPlaced(0) || game.isGameOver()) return;
 
     const target = event.target;
     if (target instanceof HTMLElement) {
         const [row, col] = getRowColFromDataset(target.dataset);
-        /**
-         * if the position is valid
-         *   attack the position
-         *   if player2 is alive
-         *     player2 attack
-         */
-        if (player2.isValidPosToAttack(row, col)) {
-            const player1AttackResult = player1.attack(row, col, player2);
-            renderShootOnBoard(row, col, player1AttackResult, board2);
-            if(player2.gameboard.isAllShipsSunk()) return;
-            const [attackRow, attackCol] = player2.getSelection(player1);
-            const player2AttackResult = player2.attack(attackRow, attackCol, player1);
-            renderShootOnBoard(attackRow, attackCol, player2AttackResult, board1);
+        if (isNaN(row)) return;
+        if (game.isValidPosToAttack(1, row, col)) {
+            let result = game.takeTurns(row, col);
+            if (!result.isValid) return;
+            renderShootOnBoard(row, col, result.isShip, board2);
+
+            if (game.isGameOver()) {
+                gameMsg.textContent = 'you win';
+                showGameMessage(gameMsg);
+                return;
+            }
+
+            result = game.takeTurns();
+            if (!result.isValid) return;
+            renderShootOnBoard(result.row, result.col, result.isShip, board1);
+            if (game.isGameOver()) {
+                gameMsg.textContent = 'pc win';
+                showGameMessage(gameMsg);
+                return;
+            }
         }
     }
 });
 
-document.getElementById('reset').addEventListener('click', event => {
-    player1.init();
-    player2.init();
+startBtn.addEventListener('click', event => {
+    if (!game.isAllShipsPlaced(0)) return;
+
+    board2.classList.remove('board--hidden');
+    rotateInput.disabled = true;
+    disableBtn(rotateBtn);
+    disableBtn(startBtn);
 });
 
-generateBoard(document.querySelectorAll('.board'));
+document.getElementById('reset-btn').addEventListener('click', event => {
+    clearBoard(board1);
+    clearBoard(board2);
+    board2.classList.add('board--hidden');
+    hideGameMessage(gameMsg);
 
-renderShipOnBoard(0, 0, { size: 2, isVertical: true }, board2);
-renderShipOnBoard(0, 1, { size: 3, isVertical: true }, board2);
-renderShipOnBoard(0, 2, { size: 3, isVertical: true }, board2);
-renderShipOnBoard(0, 3, { size: 4, isVertical: true }, board2);
-renderShipOnBoard(0, 4, { size: 5, isVertical: true }, board2);
-player2.gameboard.placeShip(0, 0, true);
-player2.gameboard.placeShip(0, 1, true);
-player2.gameboard.placeShip(0, 2, true);
-player2.gameboard.placeShip(0, 3, true);
-player2.gameboard.placeShip(0, 4, true);
+    enableBtn(rotateBtn);
+    rotateInput.disabled = false;
+
+    game.init();
+    game.placeShip(1, 0, 0, true);
+    game.placeShip(1, 0, 1, true);
+    game.placeShip(1, 0, 2, true);
+    game.placeShip(1, 0, 3, true);
+    game.placeShip(1, 0, 4, true);
+});

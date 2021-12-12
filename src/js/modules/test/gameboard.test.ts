@@ -16,19 +16,33 @@ describe('isAllShipsPlaced', () => {
     });
 });
 
-describe('isValidPos', () => {
+describe('isValidPosToPlace', () => {
     const gameboard = new Gameboard();
 
     test('return true when the position is valid', () => {
-        expect(gameboard.isValidPos(0, 0, true,)).toBeTruthy();
+        expect(gameboard.isValidPosToPlace(0, 0, true,)).toBeTruthy();
     });
     test('return false when the position has a ship already', () => {
         gameboard.board[0][0].isShip = true;
         gameboard.board[0][1].isShip = true;
-        expect(gameboard.isValidPos(0, 0, true)).toBeFalsy();
+        expect(gameboard.isValidPosToPlace(0, 0, true)).toBeFalsy();
     });
     test('return false when the ship is out of bound ', () => {
-        expect(gameboard.isValidPos(9, 9, true)).toBeFalsy();
+        expect(gameboard.isValidPosToPlace(9, 9, true)).toBeFalsy();
+    });
+});
+
+
+
+describe('isValidPosToAttack', () => {
+    const gameboard = new Gameboard();
+
+    test('return true when the position is valid ', () => {
+        expect(gameboard.isValidPosToAttack(0, 0)).toBeTruthy();
+    });
+    test('return false when the position has been attacked', () => {
+        gameboard.board[0][0].isHit = true;
+        expect(gameboard.isValidPosToAttack(0, 0)).toBeFalsy();
     });
 });
 

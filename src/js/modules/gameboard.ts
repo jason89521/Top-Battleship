@@ -75,8 +75,12 @@ export default class Gameboard {
         return this.#placeOrder >= 5;
     }
 
-    isValidPos(row: number, col: number, isVertical: boolean) {
+    isValidPosToPlace(row: number, col: number, isVertical: boolean) {
         return !this.#isOutOfBoard(row, col, isVertical) && this.#isEmpty(row, col, isVertical);
+    }
+
+    isValidPosToAttack(row: number, col: number) {
+        return !this.board[row][col].isHit;
     }
 
     placeShip(row: number, col: number, isVertical: boolean = true) {
